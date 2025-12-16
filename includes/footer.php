@@ -23,7 +23,15 @@
                     </ul>
                 </div>
                 
-                <div class="col-lg-3 col-md-4 mb-4 mb-lg-0">
+                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
+                    <h6 class="fw-bold mb-3">Legal</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/privacy-policy.php" class="text-white-50 text-decoration-none hover-primary">Privacy Policy</a></li>
+                        <li class="mb-2"><a href="/terms-of-service.php" class="text-white-50 text-decoration-none hover-primary">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 mb-4 mb-lg-0">
                     <h6 class="fw-bold mb-3">Popular Categories</h6>
                     <ul class="list-unstyled">
                         <?php
@@ -40,7 +48,7 @@
                     </ul>
                 </div>
                 
-                <div class="col-lg-3 col-md-4">
+                <div class="col-lg-4 col-md-4">
                     <h6 class="fw-bold mb-3">Connect</h6>
                     <div class="d-flex gap-3 mb-3">
                         <a href="#" class="text-white-50 fs-4 hover-primary"><i class="bi bi-twitter"></i></a>
@@ -78,5 +86,6 @@
     <!-- Custom JS -->
     <script src="/assets/js/main.js"></script>
     <script src="/assets/js/lazy-load.js"></script>
+    <script src="/assets/js/cookie-consent.js"></script>
 </body>
 </html>

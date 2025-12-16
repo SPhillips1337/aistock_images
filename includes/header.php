@@ -20,6 +20,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/lazy-load.css">
+    <link rel="stylesheet" href="/assets/css/cookie-consent.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -63,6 +64,15 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/contact.php">Contact</a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="legalDropdown" role="button" data-bs-toggle="dropdown">
+                            Legal
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="legalDropdown">
+                            <li><a class="dropdown-item" href="/privacy-policy.php">Privacy Policy</a></li>
+                            <li><a class="dropdown-item" href="/terms-of-service.php">Terms of Service</a></li>
+                        </ul>
+                    </li>
                     <li class="nav-item ms-lg-3">
                         <form action="/search.php" method="GET" class="d-flex">
                             <div class="input-group">
@@ -78,3 +88,78 @@
             </div>
         </div>
     </nav>
+
+    <!-- GDPR Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent-banner">
+        <div class="container">
+            <div class="cookie-consent-content">
+                <div class="cookie-consent-text">
+                    <h4 class="h6 mb-2">🍪 Cookie Notice</h4>
+                    <p class="mb-0">We use cookies to enhance your experience, analyze site traffic, and personalize content. By continuing to use our site, you agree to our use of cookies.</p>
+                </div>
+                <div class="cookie-consent-buttons">
+                    <button type="button" class="btn btn-outline-primary btn-sm me-2" id="cookieSettings">
+                        <i class="bi bi-gear me-1"></i>Settings
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="acceptAllCookies">
+                        Accept All
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm ms-2" id="acceptEssentialCookies">
+                        Essential Only
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Settings Modal -->
+    <div class="modal fade" id="cookieSettingsModal" tabindex="-1" aria-labelledby="cookieSettingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cookieSettingsModalLabel">
+                        <i class="bi bi-gear me-2"></i>Cookie Preferences
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h6 class="fw-bold">Essential Cookies</h6>
+                        <p class="text-muted small mb-2">Required for the website to function properly.</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="essentialCookies" checked disabled>
+                            <label class="form-check-label" for="essentialCookies">
+                                Essential (Always Active)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold">Analytics Cookies</h6>
+                        <p class="text-muted small mb-2">Help us understand how visitors interact with our website.</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="analyticsCookies">
+                            <label class="form-check-label" for="analyticsCookies">
+                                Analytics
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold">Marketing Cookies</h6>
+                        <p class="text-muted small mb-2">Used to deliver advertisements relevant to you.</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="marketingCookies">
+                            <label class="form-check-label" for="marketingCookies">
+                                Marketing
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveCookieSettings">Save Preferences</button>
+                </div>
+            </div>
+        </div>
+    </div>
