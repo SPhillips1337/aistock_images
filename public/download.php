@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once __DIR__ . '/../includes/config.php';
 
 // Get image ID
@@ -17,8 +20,12 @@ if (!$image) {
     exit;
 }
 
-// Increment download counter
-incrementDownloads($imageId);
+// Increment download counter - skip if fails to avoid breaking download
+try {
+    incrementDownloads($imageId);
+} catch (Exception $e) {
+    // Silently continue if increment fails
+}
 
 // Get file path
 $filepath = IMAGES_DIR . $image['filename'];
@@ -37,8 +44,10 @@ header('Content-Length: ' . filesize($filepath));
 header('Cache-Control: must-revalidate');
 header('Pragma: public');
 
-// Clear output buffer
-ob_clean();
+// Clear any active output buffers to avoid warnings when none exist
+while (ob_get_level() > 0) {
+    ob_end_clean();
+}
 flush();
 
 // Read file and output
