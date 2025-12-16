@@ -1,0 +1,63 @@
+# Environment and secrets
+.env
+.env.local
+.env.production
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Generated images and content
+images/
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.db.bak
+*.db.pre_cleanup_*
+
+# Log files
+*.log
+daily_run.log
+automation.log
+cleanup.log
+index.log
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Backup files
+*.bak
+*.backup
+PLAN.md
+public/image.php
+public/images
+perplexica.zip
+test_vision_qa.py
+nginx_sitemap_config.txt

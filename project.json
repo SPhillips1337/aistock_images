@@ -1,0 +1,219 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "AI Stock Photo Website",
+  "slug": "ai-stock-photo-website",
+  "summary": "Professional stock photo website featuring AI-generated images with automated content generation, NSFW filtering, and comprehensive management",
+  "version": "1.3.0",
+  "license": "MIT",
+  "status": "production",
+  "concept": "Automated stock photography platform that generates trending images using AI, scrapes news for topics, validates content quality/safety, and provides a modern web interface with lazy loading",
+  
+  "primary_features": [
+    "AI-powered image generation using ComfyUI",
+    "Automated trending topic extraction from news feeds",
+    "Enhanced ethical content filtering (keyword + AI vision)",
+    "Category-based image organization",
+    "Dynamic XML sitemap generation for SEO",
+    "Search functionality with tags",
+    "Responsive web interface with lazy loading",
+    "Download tracking and analytics",
+    "Broken link prevention and cleanup"
+  ],
+  
+  "secondary_features": [
+    "Holiday-based content generation",
+    "Two-layer ethical content validation (pre-filter + vision analysis)",
+    "Professional and moral content standards enforcement",
+    "XML sitemap generation for Google Search Console",
+    "Automated database cleanup and thumbnail fixes",
+    "Cron-based scheduling with comprehensive logging",
+    "SEO-optimized pages with dynamic sitemaps",
+    "Performance optimization with lazy loading"
+  ],
+  
+  "tech_stack": {
+    "backend": "PHP 7.4+",
+    "database": "SQLite with file existence validation",
+    "frontend": "Bootstrap 5, Vanilla JS with Intersection Observer",
+    "ai_generation": "ComfyUI + Ollama (text + vision models)",
+    "content_filtering": "Two-layer ethical filtering: keyword blocking + AI vision analysis",
+    "automation": "Bash scripts + Cron with comprehensive logging",
+    "fonts": "Google Fonts (Inter, Poppins)",
+    "icons": "Bootstrap Icons"
+  },
+  
+  "external_services": {
+    "ComfyUI": "AI image generation service with turbo/ovis workflows",
+    "Ollama": "Local LLM for text generation and vision analysis",
+    "BBC RSS": "News feed for trending topics extraction",
+    "TimeAndDate": "Holiday information scraping for seasonal content"
+  },
+  
+  "required_env": [
+    "COMFYUI_URL",
+    "OLLAMA_URL", 
+    "OLLAMA_TEXT_MODEL",
+    "OLLAMA_VISION_MODEL",
+    "BBC_RSS_URL",
+    "HOLIDAYS_URL",
+    "USER_AGENT"
+  ],
+  
+  "key_files": {
+    "auto_stock_creator.py": "Main AI image generation script with NSFW filtering",
+    "run_automation.sh": "Complete automation pipeline with logging",
+    "scripts/index_images.php": "Database indexing for new images",
+    "scripts/cleanup_deleted.php": "Cleanup deleted images and fix broken thumbnails",
+    "public/index.php": "Homepage with recent images and categories",
+    "includes/config.php": "Database configuration with file existence filtering",
+    "assets/js/lazy-load.js": "Intersection Observer lazy loading implementation",
+    "assets/css/lazy-load.css": "Loading animations and transitions",
+    "schema.sql": "Database schema definition"
+  },
+  
+  "architecture": {
+    "overview": "Three-tier architecture with automated content generation, NSFW filtering, database management, and responsive web frontend with performance optimizations",
+    "components": {
+      "content_generation": {
+        "description": "AI-powered image generation with trending topic extraction and NSFW filtering",
+        "implementation": "Python script using ComfyUI and Ollama APIs with vision-based content validation",
+        "files": ["auto_stock_creator.py"],
+        "status": "completed"
+      },
+      "content_filtering": {
+        "description": "Enhanced two-layer ethical filtering: pre-generation keyword blocking + AI vision analysis",
+        "implementation": "Vision AI with moral/ethical content validation and pre-filter keyword blocking",
+        "files": ["auto_stock_creator.py", "keyword_filters.py", "test_filtering.py"],
+        "status": "completed"
+      },
+      "database_layer": {
+        "description": "SQLite database with automated indexing, cleanup, and file existence validation",
+        "implementation": "PHP scripts for CRUD operations, maintenance, and broken link prevention",
+        "files": ["includes/config.php", "scripts/index_images.php", "scripts/cleanup_deleted.php"],
+        "status": "completed"
+      },
+      "web_frontend": {
+        "description": "Responsive Bootstrap-based interface with lazy loading and performance optimization",
+        "implementation": "PHP pages with modern CSS/JS and Intersection Observer API",
+        "files": ["public/*.php", "assets/css/*", "assets/js/*"],
+        "status": "completed"
+      },
+      "automation": {
+        "description": "Cron-based scheduling for generation, maintenance, and comprehensive logging",
+        "implementation": "Bash scripts with error handling and detailed logging",
+        "files": ["run_automation.sh", "run_daily.sh", "run_now.sh"],
+        "status": "completed"
+      }
+    }
+  },
+  
+  "current_capabilities": [
+    "Generate images based on trending news topics and holidays",
+    "Enhanced ethical content filtering (pre-generation keyword blocking)",
+    "AI vision analysis for professional and moral standards",
+    "Automatically categorize and tag images",
+    "Provide responsive web gallery with lazy loading",
+    "Track download statistics and popular content",
+    "Prevent broken image links with file existence checks",
+    "Auto-fix broken category thumbnails",
+    "Clean up deleted files from database",
+    "Comprehensive logging and error handling"
+  ],
+  
+  "how_to_run_locally": {
+    "setup": "Run ./setup.sh to configure environment and dependencies",
+    "development_server": "cd public && php -S localhost:8000",
+    "manual_generation": "./run_now.sh for full pipeline",
+    "requirements": "PHP 7.4+, Python 3.8+, ComfyUI server, Ollama server with vision model"
+  },
+  
+  "api_endpoints": [
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "description": "Homepage with recent images and category grid (lazy loaded)"
+    },
+    {
+      "endpoint": "/category.php?slug={slug}",
+      "method": "GET", 
+      "description": "Category page showing all images in category (filtered for existence)"
+    },
+    {
+      "endpoint": "/image.php?id={id}",
+      "method": "GET",
+      "description": "Individual image detail page with download"
+    },
+    {
+      "endpoint": "/search.php?q={query}",
+      "method": "GET",
+      "description": "Search results for image queries (filtered for existence)"
+    },
+    {
+      "endpoint": "/download.php?id={id}",
+      "method": "GET",
+      "description": "Image download handler with tracking"
+    }
+  ],
+  
+  "generation_modes": {
+    "turbo": {
+      "description": "Fast generation mode using turbo workflow",
+      "time": 15,
+      "features": ["Quick generation", "Standard quality", "NSFW filtering"]
+    },
+    "ovis": {
+      "description": "High-quality generation with enhanced vision validation",
+      "time": 45,
+      "features": ["High quality", "Enhanced AI validation", "Better composition", "NSFW filtering"]
+    }
+  },
+  
+  "features": {
+    "completed": [
+      "AI image generation with dual workflows",
+      "News topic extraction and holiday content", 
+      "Enhanced ethical content filtering (keyword + AI vision)",
+      "Image quality and professional/moral standards validation",
+      "Database management with file existence checks",
+      "Dynamic XML sitemap generation for SEO",
+      "Web interface with lazy loading",
+      "Search functionality with real-time filtering",
+      "Automated cleanup and thumbnail management",
+      "Cron scheduling with comprehensive logging",
+      "Broken link prevention",
+      "Performance optimization"
+    ],
+    "demo_ready": [
+      "Browse categories with lazy loading",
+      "Search images with instant results",
+      "Download tracking and analytics",
+      "Responsive design across devices",
+      "Performance-optimized image loading",
+      "Professional content standards"
+    ],
+    "future_enhancements": [
+      "User accounts and favorites system",
+      "Advanced filtering and sorting options",
+      "Bulk download functionality",
+      "REST API for external access",
+      "Analytics dashboard with insights",
+      "Content moderation interface"
+    ]
+  },
+  
+    "security_considerations": [
+    "Enhanced ethical content filtering (prevent violence, trauma, bad taste)",
+    "Two-layer validation: pre-generation keyword blocking + AI vision analysis",
+    "Professional and moral content standards enforcement",
+    "Environment variable protection for API keys",
+    "File existence validation to prevent broken links",
+    "Input sanitization and SQL injection prevention",
+    "Proper error handling without information disclosure",
+    "Moved sensitive files outside web root (.env, vendor, node_modules)"
+  ],
+  
+  "progress_percent": 100,
+  "progress_state": "Production ready with enhanced ethical filtering, dynamic sitemaps, and comprehensive security hardening",
+  
+  "lastUpdated": "2025-12-16T18:50:00Z"
+}
