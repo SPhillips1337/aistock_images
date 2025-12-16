@@ -28,5 +28,10 @@ log_message "Step 2: Generating new images..."
 log_message "Step 3: Indexing new images..."
 php scripts/index_images.php >> "$LOG_FILE" 2>&1
 
+# Step 4: Generate AI-related image suggestions
+log_message "Step 4: Generating AI-related image suggestions..."
+php scripts/generate_related_images.php
+log_message "Related images generation complete!"
+
 log_message "Automation complete!"
 log_message "========================================="

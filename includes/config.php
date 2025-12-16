@@ -158,6 +158,24 @@ function createSlug($text) {
     return trim($text, '-');
 }
 
+// Get AI-suggested related images for an image
+function getAIRelatedImages($imageId, $limit = 6) {
+    $db = getDB();
+    $stmt = $db->prepare("
+        SELECT i.*, c.name as category_name, c.slug as category_slug, r.relevance_score
+        FROM related_images r
+        JOIN images i ON r.related_image_id = i.id
+        LEFT JOIN categories c ON i.category_id = c.id
+        WHERE r.image_id = ?
+        ORDER BY r.relevance_score DESC, i.created_at DESC
+        LIMIT ?
+    ");
+    $stmt->execute([$imageId, $limit * 2]);
+    $images = $stmt->fetchAll();
+    $filtered = filterExistingImages($images);
+    return array_slice($filtered, 0, $limit);
+}
+
 // Helper function to format file size
 function formatFileSize($bytes) {
     if ($bytes >= 1073741824) {

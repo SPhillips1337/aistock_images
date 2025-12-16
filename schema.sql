@@ -34,8 +34,21 @@ CREATE TABLE IF NOT EXISTS tags (
     FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE
 );
 
+-- Related images table for AI-generated suggestions
+CREATE TABLE IF NOT EXISTS related_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    image_id INTEGER NOT NULL,
+    related_image_id INTEGER NOT NULL,
+    relevance_score REAL DEFAULT 0.5,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE,
+    FOREIGN KEY (related_image_id) REFERENCES images(id) ON DELETE CASCADE,
+    UNIQUE(image_id, related_image_id)
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_images_category ON images(category_id);
 CREATE INDEX IF NOT EXISTS idx_tags_image ON tags(image_id);
 CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(tag_name);
 CREATE INDEX IF NOT EXISTS idx_images_created ON images(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_related_images ON related_images(image_id);

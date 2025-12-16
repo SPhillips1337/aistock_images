@@ -17,8 +17,11 @@ if (!$image) {
     exit;
 }
 
-// Get related images
-$relatedImages = getRelatedImages($image['category_id'], $image['id'], 6);
+// Get AI-suggested related images first, fallback to category-based
+$relatedImages = getAIRelatedImages($image['id'], 6);
+if (empty($relatedImages)) {
+    $relatedImages = getRelatedImages($image['category_id'], $image['id'], 6);
+}
 
 // Get file info
 $filepath = IMAGES_DIR . $image['filename'];
