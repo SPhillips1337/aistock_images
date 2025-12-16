@@ -45,7 +45,7 @@ include __DIR__ . '/../includes/header.php';
         <div class="image-grid">
             <?php foreach ($recentImages as $image): ?>
                 <a href="/image.php?id=<?php echo $image['id']; ?>" class="image-card text-decoration-none">
-                    <img data-src="/images/<?php echo e($image['filename']); ?>" 
+                    <img data-src="/thumbnail.php?w=300&h=225&img=/images/<?php echo e($image['filename']); ?>" 
                          class="lazy"
                          alt="<?php echo e($image['category_name']); ?>">
                     <div class="image-overlay">
@@ -79,9 +79,9 @@ include __DIR__ . '/../includes/header.php';
                            class="text-decoration-none">
                             <div class="category-card">
                                 <?php if ($category['thumbnail_path']): ?>
-                                    <img data-src="/images/<?php echo e($category['thumbnail_path']); ?>" 
-                                         class="lazy"
-                                         alt="<?php echo e($category['name']); ?>">
+                                    <img data-src="/thumbnail.php?w=300&h=225&img=/images/<?php echo e($category['thumbnail_path']); ?>" 
+                                          class="lazy"
+                                          alt="<?php echo e($category['name']); ?>">
                                 <?php else: ?>
                                     <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
                                 <?php endif; ?>

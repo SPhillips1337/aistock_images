@@ -215,7 +215,7 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
     background: white;
-    aspect-ratio: 1;
+    aspect-ratio: 4/3;
 }
 
 .image-card:hover {

@@ -70,7 +70,7 @@ include __DIR__ . '/../includes/header.php';
             <div class="image-grid">
                 <?php foreach ($images as $image): ?>
                     <a href="/image.php?id=<?php echo $image['id']; ?>" class="image-card text-decoration-none">
-                        <img data-src="/images/<?php echo e($image['filename']); ?>" 
+                        <img data-src="/thumbnail.php?w=300&h=225&img=/images/<?php echo e($image['filename']); ?>" 
                              class="lazy"
                              alt="<?php echo e($category['name']); ?> - Image <?php echo $image['id']; ?>">
                         <div class="image-overlay">
