@@ -23,6 +23,18 @@ except ImportError:
     def filter_keywords(keywords):
         return keywords
 
+# Import enhanced prompt generator (optional)
+try:
+    from enhanced_prompt_generator import EnhancedPromptGenerator
+except ImportError:
+    # Fallback trivial implementation
+    class EnhancedPromptGenerator:
+        def generate_enhanced_prompt(self, keyword):
+            return f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
+        def get_ovis_fallback_prompt(self, keyword, text_issue_reason=""):
+            clean_text = keyword.replace(' and ', ' & ').replace(' ', ' ').upper()
+            return f"A professional stock photo of {keyword}. The text '{clean_text}' is written in a clean, bold, white sans-serif font centered at the top. High-end lighting, minimalist background."
+
 # Load environment variables
 load_dotenv()
 
@@ -460,12 +472,15 @@ def main():
         ws.connect(f"ws://{urlparse(COMFYUI_URL).netloc}/ws?clientId={COMFYUI_CLIENT_ID}")
 
         try:
+            # Initialize enhanced prompt generator
+            prompt_generator = EnhancedPromptGenerator()
+
             for keyword in keywords:
                 print(f"Processing keyword: {keyword}")
                 
                 # Base prompt construction
-                stock_prompt = f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
-                
+                stock_prompt = prompt_generator.generate_enhanced_prompt(keyword)
+
                 # Try Primary (Turbo) first
                 seed = random.randint(1, 10**15)
                 print(f"Generating with Turbo... (Seed: {seed})")

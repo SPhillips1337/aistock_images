@@ -212,6 +212,15 @@ python3 test_filtering.py  # Test keyword filtering
 - 🔧 **Security & Paths**: Virtualenv and .env moved outside web root; scripts updated to use secure paths
 - 🐛 **CSS Fixes**: Overlay and hero gradient fixes for consistent styling across site
 
+### v1.4.1 (2025-12-17)
+- 🔧 **Generator Repair**: Restored ComfyUI helper functions and fixed syntax so the generation pipeline runs end-to-end
+- 🔁 **Indexer Robustness**: Indexer now updates DB `created_at` when file mtime is newer, ensuring overwritten images appear under "Recently Added"
+- 🛠️ **Failure Monitoring**: Automation wrapper now logs generation failures to `automation_failures.log` for easier monitoring
+- ✅ **Integration Test**: Performed single-keyword end-to-end test with enhanced prompts and Ovis fallback — image created and indexed successfully
+- 🔒 **Service Checks**: Verified ComfyUI and Ollama endpoints are reachable from the server
+- 🧰 **Housekeeping**: Minor fixes and documentation updates
+
+
 ### v1.3.0 (2025-12-16)
 - ✨ **Enhanced Ethical Filtering**: Two-layer content protection system
 - ✨ **Dynamic Sitemap Generation**: Auto-generated XML sitemaps for SEO
