@@ -1,0 +1,49 @@
+{
+  "78": {
+    "inputs": {
+      "image": "Summer_1.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "101": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "102",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "102": {
+    "inputs": {
+      "upscale_model": [
+        "104",
+        0
+      ],
+      "image": [
+        "78",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "Upscale Image (using Model)"
+    }
+  },
+  "104": {
+    "inputs": {
+      "model_name": "nmkdSiaxCX_200k.safetensors"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Load Upscale Model"
+    }
+  }
+}

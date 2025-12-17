@@ -14,6 +14,10 @@ if (!in_array($sort, ['alphabetical', 'recent', 'popular'])) {
 $categories = getCategories($sort);
 $recentImages = getRecentImages(8);
 
+// Provide SEO data for header to output
+$SEO_PAGE_TYPE = 'home';
+$SEO_PAGE_DATA = [];
+
 // Get alphabet navigation
 $alphabetNav = getAlphabetNavigation($categories);
 

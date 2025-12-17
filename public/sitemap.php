@@ -5,7 +5,7 @@ header('Content-Type: application/xml');
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-$baseUrl = 'https://stock.happymonkey.ai';
+$baseUrl = defined('SITE_URL') ? SITE_URL : 'https://stock.happymonkey.ai';
 
 // Helper function to output URL
 function outputUrl($url, $lastmod = null, $changefreq = 'weekly', $priority = '0.7') {

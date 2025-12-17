@@ -36,7 +36,16 @@
     gtag('js', new Date());
 
     gtag('config', 'G-BHCYC02Q5P');
-    </script>    
+    </script>
+
+    <?php
+    // Insert page-specific SEO output if set by the page before including header
+    if (isset($SEO_PAGE_TYPE) && function_exists('output_seo_head')) {
+        // Pass optional data array
+        $data = $SEO_PAGE_DATA ?? [];
+        output_seo_head($SEO_PAGE_TYPE, $data);
+    }
+    ?>
 </head>
 <body>
     <!-- Navigation -->

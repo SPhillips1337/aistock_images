@@ -1,0 +1,43 @@
+User-agent: *
+Allow: /
+
+# Image directories
+Allow: /images/
+Allow: /assets/
+
+# Important pages
+Allow: /
+Allow: /category.php
+Allow: /search.php
+Allow: /image.php
+Allow: /download.php
+Allow: /about.php
+Allow: /contact.php
+Allow: /privacy-policy.php
+Allow: /terms-of-service.php
+Allow: /sitemap.php
+Allow: /sitemap_index.xml
+
+# Block admin and system files
+Disallow: /includes/
+Disallow: /scripts/
+Disallow: /.*
+Disallow: /venv/
+Disallow: /.*
+Disallow: /auto_stock_creator.py
+Disallow: /run_*.sh
+Disallow: /.env*
+Disallow: /schema.sql
+Disallow: /automation.log
+Disallow: /*.log
+Disallow: /*.rejected
+Disallow: /_*
+
+# Sitemap location
+Sitemap: http://localhost/sitemap_index.xml
+
+# Crawl delay (optional, polite crawling)
+Crawl-delay: 1
+
+# Host (if different from main domain)
+# Host: localhost
