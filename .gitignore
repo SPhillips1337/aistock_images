@@ -61,3 +61,6 @@ public/images
 perplexica.zip
 test_vision_qa.py
 nginx_sitemap_config.txt
+public/test.php
+public/BingSiteAuth.xml
+.gitignore
