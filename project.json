@@ -96,9 +96,22 @@
     "overview": "Three-tier architecture with automated content generation, NSFW filtering, database management, and responsive web frontend with performance optimizations",
     "components": {
       "content_generation": {
-        "description": "AI-powered image generation with trending topic extraction and NSFW filtering",
-        "implementation": "Python script using ComfyUI and Ollama APIs with vision-based content validation",
-        "files": ["auto_stock_creator.py"],
+        "description": "AI-powered image generation with enhanced professional prompts and vision-based quality control",
+        "implementation": "Python script using ComfyUI with Google Gemini-inspired prompt optimization: camera specs, lighting descriptions, material textures, and professional composition",
+        "files": ["auto_stock_creator.py", "enhanced_prompt_generator.py"],
+        "prompt_optimization": {
+          "camera_qualities": ["shallow depth of field", "beautiful bokeh", "subject separation", "front-to-back sharpness"],
+          "lighting_techniques": ["soft morning sunlight", "Rembrandt lighting", "volumetric fog"],
+          "material_descriptions": ["minimalist marble", "teak wood", "brushed steel"],
+          "enhancement_qualities": ["visible skin pores", "micro-contrast", "three-dimensional feel"],
+          "fix_applied": "Removed explicit camera equipment references to prevent cameras appearing in generated images",
+          "ovis_fallback": {
+            "text_placement": "centered at top with clean, bold white sans-serif font",
+            "structural_instructions": "Explicit font, color, and position descriptions",
+            "category_context": "Person practicing yoga, athlete in gym, professional in office",
+            "multimodal_activation": "Activates Ovis's layout capabilities for text integration"
+          }
+        },
         "status": "completed"
       },
       "content_filtering": {
@@ -247,5 +260,5 @@
   "progress_percent": 100,
   "progress_state": "Production ready with enhanced ethical filtering, dynamic sitemaps, and comprehensive security hardening",
   
-  "lastUpdated": "2025-12-16T18:50:00Z"
+  "lastUpdated": "2025-12-17T15:30:00Z"
 }

@@ -28,6 +28,15 @@
         <link rel="stylesheet" href="/assets/css/filter-controls.css?v=1.0.1">
         <script src="/assets/js/filter-controls.js" defer></script>
     <?php endif; ?>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BHCYC02Q5P"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-BHCYC02Q5P');
+    </script>    
 </head>
 <body>
     <!-- Navigation -->
