@@ -1,0 +1,26 @@
+{
+  "baseline": {
+    "attempts": 6,
+    "passes": 6,
+    "files": [
+      "images/ab_baseline_1.png",
+      "images/ab_baseline_2.png",
+      "images/ab_baseline_3.png",
+      "images/ab_baseline_4.png",
+      "images/ab_baseline_5.png",
+      "images/ab_baseline_6.png"
+    ]
+  },
+  "negatives": {
+    "attempts": 6,
+    "passes": 6,
+    "files": [
+      "images/ab_negatives_1.png",
+      "images/ab_negatives_2.png",
+      "images/ab_negatives_3.png",
+      "images/ab_negatives_4.png",
+      "images/ab_negatives_5.png",
+      "images/ab_negatives_6.png"
+    ]
+  }
+}
