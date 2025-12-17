@@ -121,6 +121,11 @@
         "description": "Cron-based scheduling for generation, maintenance, and comprehensive logging",
         "implementation": "Bash scripts with error handling and detailed logging",
         "files": ["run_automation.sh", "run_daily.sh", "run_now.sh"],
+        "schedule": {
+          "image_generation": "Hourly at minute 5 (5 * * * *)",
+          "cleanup_deleted": "Every 6 hours (0 */6 * * *)", 
+          "reindex_images": "Hourly at minute 0 (0 * * * *)"
+        },
         "status": "completed"
       }
     }
