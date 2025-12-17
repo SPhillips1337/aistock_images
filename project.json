@@ -49,6 +49,8 @@
     "TimeAndDate": "Holiday information scraping for seasonal content"
   },
   
+  "env_file_path": "/home/stephen/private/happymonkey.ai/stock.env",
+  
   "required_env": [
     "COMFYUI_URL",
     "OLLAMA_URL", 
