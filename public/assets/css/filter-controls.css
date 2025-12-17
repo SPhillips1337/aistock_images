@@ -1,4 +1,3 @@
-<style>
 .sort-controls {
     background: white;
     padding: 20px;
@@ -48,8 +47,9 @@
 
 .alphabet-nav {
     position: sticky;
-    top: 20px;
+    top: 220px;
     width: 60px;
+    height: 926px;
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -156,66 +156,3 @@
         height: 35px;
     }
 }
-</style>
-
-<script>
-// Handle sort selection
-document.addEventListener('DOMContentLoaded', function() {
-    const sortButtons = document.querySelectorAll('.sort-btn');
-    sortButtons.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Update active state
-            sortButtons.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Reload page with new sort
-            const sort = this.dataset.sort;
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('sort', sort);
-            window.location.href = currentUrl.toString();
-        });
-    });
-    
-    // Handle alphabet navigation
-    const alphaLinks = document.querySelectorAll('.alpha-link');
-    alphaLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const letter = this.dataset.letter;
-            const targetSection = document.getElementById('letter-' + letter);
-            
-            if (targetSection) {
-                targetSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                
-                // Update active state
-                alphaLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-            }
-        });
-    });
-    
-    // Update active alphabet letter based on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const letter = entry.target.id.replace('letter-', '');
-                alphaLinks.forEach(l => {
-                    l.classList.remove('active');
-                    if (l.dataset.letter === letter) {
-                        l.classList.add('active');
-                    }
-                });
-            }
-        });
-    }, { threshold: 0.2 });
-    
-    document.querySelectorAll('.category-section').forEach(section => {
-        observer.observe(section);
-    });
-});
-</script>

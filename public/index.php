@@ -118,7 +118,7 @@ include __DIR__ . '/../includes/header.php';
                                 <div class="category-letter-header">
                                     <div class="category-letter"><?php echo $letter; ?></div>
                                     <div>
-                                        <h3 class="mb-1"><?php echo $letter; ?></h3>
+                                        <!-- <h3 class="mb-1"><?php echo $letter; ?></h3> -->
                                         <p class="category-count mb-0">
                                             <?php echo count($letterCategories); ?> <?php echo count($letterCategories) == 1 ? 'category' : 'categories'; ?>
                                         </p>
@@ -265,7 +265,6 @@ include __DIR__ . '/../includes/header.php';
 </section>
 
 <?php 
-// Include the filter controls CSS
-echo '<link rel="stylesheet" href="/assets/css/filter-controls.css">';
+// Include the footer
 include __DIR__ . '/../includes/footer.php'; 
 ?>

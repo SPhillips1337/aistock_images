@@ -22,10 +22,11 @@
     <link rel="stylesheet" href="/assets/css/lazy-load.css">
     <link rel="stylesheet" href="/assets/css/cookie-consent.css">
     <?php 
-    // Include filter controls CSS for pages that need it
+    // Include filter controls CSS and JS for pages that need it
     if (basename($_SERVER['PHP_SELF']) === 'index.php' || basename($_SERVER['PHP_SELF']) === 'category.php'):
     ?>
-        <link rel="stylesheet" href="/assets/css/filter-controls.css">
+        <link rel="stylesheet" href="/assets/css/filter-controls.css?v=1.0.1">
+        <script src="/assets/js/filter-controls.js" defer></script>
     <?php endif; ?>
 </head>
 <body>

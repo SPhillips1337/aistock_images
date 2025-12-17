@@ -30,8 +30,6 @@ $pageDescription = "Browse {$category['actual_count']} AI-generated images in th
 
 include __DIR__ . '/../includes/header.php';
 ?>
-
-<link rel="stylesheet" href="/assets/css/filter-controls.css">
 </head>
 
 <!-- Breadcrumb -->
