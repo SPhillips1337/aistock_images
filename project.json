@@ -49,7 +49,24 @@
     "TimeAndDate": "Holiday information scraping for seasonal content"
   },
   
-  "env_file_path": "/home/stephen/private/happymonkey.ai/stock.env",
+  "security_hardening": {
+    "description": "Security hardening moved sensitive files outside web root for protection",
+    "env_file_path": "/home/stephen/private/happymonkey.ai/stock.env",
+    "venv_path": "/home/stephen/private/happymonkey.ai/stock_venv",
+    "secure_storage_base": "/home/stephen/private/happymonkey.ai/",
+    "web_root": "/var/www/html/happymonkey.ai/stock/",
+    "files_moved": [
+      ".env → /home/stephen/private/happymonkey.ai/stock.env",
+      "venv/ → /home/stephen/private/happymonkey.ai/stock_venv/",
+      "Other sensitive config files moved to /home/stephen/private/happymonkey.ai/"
+    ],
+    "implementation_notes": [
+      "Automation scripts updated to use secure paths",
+      "Symlinks created in project root for compatibility",
+      "All API keys and sensitive data stored outside web-accessible directories",
+      "Virtual environment moved to prevent web access to Python packages"
+    ]
+  },
   
   "required_env": [
     "COMFYUI_URL",
@@ -204,15 +221,18 @@
   },
   
     "security_considerations": [
-    "Enhanced ethical content filtering (prevent violence, trauma, bad taste)",
-    "Two-layer validation: pre-generation keyword blocking + AI vision analysis",
-    "Professional and moral content standards enforcement",
-    "Environment variable protection for API keys",
-    "File existence validation to prevent broken links",
-    "Input sanitization and SQL injection prevention",
-    "Proper error handling without information disclosure",
-    "Moved sensitive files outside web root (.env, vendor, node_modules)"
-  ],
+     "Enhanced ethical content filtering (prevent violence, trauma, bad taste)",
+     "Two-layer validation: pre-generation keyword blocking + AI vision analysis",
+     "Professional and moral content standards enforcement",
+     "Environment variable protection for API keys",
+     "File existence validation to prevent broken links",
+     "Input sanitization and SQL injection prevention",
+     "Proper error handling without information disclosure",
+     "Security hardening: moved sensitive files outside web root",
+     "All .env files, virtual environments stored in /home/stephen/private/",
+     "Automation scripts updated to use secure file paths",
+     "Symlinks used for compatibility while maintaining security"
+   ],
   
   "progress_percent": 100,
   "progress_state": "Production ready with enhanced ethical filtering, dynamic sitemaps, and comprehensive security hardening",

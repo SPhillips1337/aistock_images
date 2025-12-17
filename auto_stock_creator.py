@@ -1,4 +1,4 @@
-#!/usr/bin/env ./venv/bin/python3
+#!/usr/bin/env /home/stephen/private/happymonkey.ai/stock_venv/bin/python3
 
 import requests
 import websocket

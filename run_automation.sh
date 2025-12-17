@@ -22,7 +22,7 @@ php scripts/cleanup_deleted.php >> "$LOG_FILE" 2>&1
 
 # 2. Generate new images
 log_message "Step 2: Generating new images..."
-./venv/bin/python3 auto_stock_creator.py >> "$LOG_FILE" 2>&1
+/home/stephen/private/happymonkey.ai/stock_venv/bin/python3 auto_stock_creator.py >> "$LOG_FILE" 2>&1
 
 # 3. Index new images
 log_message "Step 3: Indexing new images..."
