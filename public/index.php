@@ -4,9 +4,30 @@ require_once __DIR__ . '/../includes/config.php';
 $pageTitle = 'Home';
 $pageDescription = 'Browse thousands of AI-generated stock photos across various categories. Free high-quality images for your projects.';
 
-// Get all categories
-$categories = getCategories();
+// Get sorting preference
+$sort = $_GET['sort'] ?? 'alphabetical';
+if (!in_array($sort, ['alphabetical', 'recent', 'popular'])) {
+    $sort = 'alphabetical';
+}
+
+// Get categories with sorting
+$categories = getCategories($sort);
 $recentImages = getRecentImages(8);
+
+// Get alphabet navigation
+$alphabetNav = getAlphabetNavigation($categories);
+
+// Group categories by first letter
+$groupedCategories = [];
+foreach ($categories as $category) {
+    if ($category['actual_count'] > 0) {
+        $letter = strtoupper(substr($category['name'], 0, 1));
+        if (!isset($groupedCategories[$letter])) {
+            $groupedCategories[$letter] = [];
+        }
+        $groupedCategories[$letter][] = $category;
+    }
+}
 
 include __DIR__ . '/../includes/header.php';
 ?>
@@ -71,34 +92,131 @@ include __DIR__ . '/../includes/header.php';
             <p class="text-muted mt-3">Explore our diverse collection of AI-generated images</p>
         </div>
         
-        <div class="row g-4">
-            <?php foreach ($categories as $category): ?>
-                <?php if ($category['actual_count'] > 0): ?>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <a href="/category.php?slug=<?php echo e($category['slug']); ?>" 
-                           class="text-decoration-none">
-                            <div class="category-card">
-                                <?php if ($category['thumbnail_path']): ?>
-                                    <img data-src="/thumbnail.php?w=300&h=225&img=/images/<?php echo e($category['thumbnail_path']); ?>" 
-                                          class="lazy"
-                                          alt="<?php echo e($category['name']); ?>">
-                                <?php else: ?>
-                                    <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
-                                <?php endif; ?>
-                                <div class="category-card-body">
-                                    <h3 class="category-card-title"><?php echo e($category['name']); ?></h3>
-                                    <p class="category-card-count">
-                                        <i class="bi bi-images me-1"></i>
-                                        <?php echo $category['actual_count']; ?> 
-                                        <?php echo $category['actual_count'] == 1 ? 'image' : 'images'; ?>
-                                    </p>
+        <!-- Sort Controls -->
+        <div class="sort-controls">
+            <div class="sort-buttons">
+                <a href="/?sort=alphabetical" class="sort-btn <?php echo $sort === 'alphabetical' ? 'active' : ''; ?>" data-sort="alphabetical">
+                    <i class="bi bi-sort-alpha-down me-1"></i> Alphabetical
+                </a>
+                <a href="/?sort=recent" class="sort-btn <?php echo $sort === 'recent' ? 'active' : ''; ?>" data-sort="recent">
+                    <i class="bi bi-clock-history me-1"></i> Most Recent
+                </a>
+                <a href="/?sort=popular" class="sort-btn <?php echo $sort === 'popular' ? 'active' : ''; ?>" data-sort="popular">
+                    <i class="bi bi-bar-chart me-1"></i> Most Popular
+                </a>
+            </div>
+        </div>
+        
+        <?php if ($sort === 'alphabetical'): ?>
+            <!-- Alphabetical Layout with Navigation -->
+            <div class="categories-with-nav">
+                <div class="categories-container">
+                    <?php if (!empty($groupedCategories)): ?>
+                        <?php ksort($groupedCategories); ?>
+                        <?php foreach ($groupedCategories as $letter => $letterCategories): ?>
+                            <div class="category-section" id="letter-<?php echo $letter; ?>">
+                                <div class="category-letter-header">
+                                    <div class="category-letter"><?php echo $letter; ?></div>
+                                    <div>
+                                        <h3 class="mb-1"><?php echo $letter; ?></h3>
+                                        <p class="category-count mb-0">
+                                            <?php echo count($letterCategories); ?> <?php echo count($letterCategories) == 1 ? 'category' : 'categories'; ?>
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-4">
+                                    <?php foreach ($letterCategories as $category): ?>
+                                        <div class="col-lg-3 col-md-4 col-sm-6">
+                                            <a href="/category.php?slug=<?php echo e($category['slug']); ?>" 
+                                               class="text-decoration-none">
+                                                <div class="category-card">
+                                                    <?php if ($category['thumbnail_path']): ?>
+                                                        <img data-src="/thumbnail.php?w=300&h=225&img=/images/<?php echo e($category['thumbnail_path']); ?>" 
+                                                             class="lazy"
+                                                             alt="<?php echo e($category['name']); ?>">
+                                                    <?php else: ?>
+                                                        <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                                                    <?php endif; ?>
+                                                    <div class="category-card-body">
+                                                        <h3 class="category-card-title"><?php echo e($category['name']); ?></h3>
+                                                        <p class="category-card-count">
+                                                            <i class="bi bi-images me-1"></i>
+                                                            <?php echo $category['actual_count']; ?> 
+                                                            <?php echo $category['actual_count'] == 1 ? 'image' : 'images'; ?>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    <?php endforeach; ?>
                                 </div>
                             </div>
-                        </a>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="no-categories">
+                            <i class="bi bi-folder-x display-1 text-muted"></i>
+                            <p class="text-muted mt-3">No categories found</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                
+                <!-- Alphabet Navigation -->
+                <?php if (!empty($groupedCategories)): ?>
+                    <div class="alphabet-nav">
+                        <?php 
+                        $alphabet = range('A', 'Z');
+                        foreach ($alphabet as $letter): 
+                            $hasCategories = isset($groupedCategories[$letter]);
+                            $count = $hasCategories ? count($groupedCategories[$letter]) : 0;
+                        ?>
+                            <?php if ($hasCategories): ?>
+                                <a href="#letter-<?php echo $letter; ?>" 
+                                   class="alpha-link alpha-letter has-categories" 
+                                   data-letter="<?php echo $letter; ?>"
+                                   title="<?php echo $count; ?> <?php echo $count == 1 ? 'category' : 'categories'; ?>">
+                                    <?php echo $letter; ?>
+                                </a>
+                            <?php else: ?>
+                                <span class="alpha-letter" title="No categories">
+                                    <?php echo $letter; ?>
+                                </span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
-            <?php endforeach; ?>
-        </div>
+            </div>
+        <?php else: ?>
+            <!-- Standard Grid Layout for Recent/Popular -->
+            <div class="row g-4">
+                <?php foreach ($categories as $category): ?>
+                    <?php if ($category['actual_count'] > 0): ?>
+                        <div class="col-lg-3 col-md-4 col-sm-6">
+                            <a href="/category.php?slug=<?php echo e($category['slug']); ?>" 
+                               class="text-decoration-none">
+                                <div class="category-card">
+                                    <?php if ($category['thumbnail_path']): ?>
+                                        <img data-src="/thumbnail.php?w=300&h=225&img=/images/<?php echo e($category['thumbnail_path']); ?>" 
+                                             class="lazy"
+                                             alt="<?php echo e($category['name']); ?>">
+                                    <?php else: ?>
+                                        <div style="height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+                                    <?php endif; ?>
+                                    <div class="category-card-body">
+                                        <h3 class="category-card-title"><?php echo e($category['name']); ?></h3>
+                                        <p class="category-card-count">
+                                            <i class="bi bi-images me-1"></i>
+                                            <?php echo $category['actual_count']; ?> 
+                                            <?php echo $category['actual_count'] == 1 ? 'image' : 'images'; ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </section>
 
@@ -137,7 +255,7 @@ include __DIR__ . '/../includes/header.php';
                     </div>
                     <h4 class="fw-bold mb-3">Always Growing</h4>
                     <p class="text-muted">
-                        New images are added daily, expanding our 
+                        New images are added hourly, expanding our 
                         collection across all categories.
                     </p>
                 </div>
@@ -146,4 +264,8 @@ include __DIR__ . '/../includes/header.php';
     </div>
 </section>
 
-<?php include __DIR__ . '/../includes/footer.php'; ?>
+<?php 
+// Include the filter controls CSS
+echo '<link rel="stylesheet" href="/assets/css/filter-controls.css">';
+include __DIR__ . '/../includes/footer.php'; 
+?>

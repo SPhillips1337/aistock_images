@@ -21,6 +21,12 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/lazy-load.css">
     <link rel="stylesheet" href="/assets/css/cookie-consent.css">
+    <?php 
+    // Include filter controls CSS for pages that need it
+    if (basename($_SERVER['PHP_SELF']) === 'index.php' || basename($_SERVER['PHP_SELF']) === 'category.php'):
+    ?>
+        <link rel="stylesheet" href="/assets/css/filter-controls.css">
+    <?php endif; ?>
 </head>
 <body>
     <!-- Navigation -->

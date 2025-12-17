@@ -17,13 +17,22 @@ if (!$category) {
     exit;
 }
 
-$images = getImagesByCategory($category['id']);
+// Get sorting preference
+$sort = $_GET['sort'] ?? 'recent';
+if (!in_array($sort, ['alphabetical', 'recent', 'popular'])) {
+    $sort = 'recent';
+}
+
+$images = getImagesByCategory($category['id'], null, 0, $sort);
 
 $pageTitle = $category['name'];
 $pageDescription = "Browse {$category['actual_count']} AI-generated images in the {$category['name']} category.";
 
 include __DIR__ . '/../includes/header.php';
 ?>
+
+<link rel="stylesheet" href="/assets/css/filter-controls.css">
+</head>
 
 <!-- Breadcrumb -->
 <div class="container mt-4">
@@ -51,6 +60,25 @@ include __DIR__ . '/../includes/header.php';
             <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 <a href="/" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left me-2"></i>Back to Categories
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sort Controls -->
+<section class="py-3 bg-light">
+    <div class="container">
+        <div class="sort-controls">
+            <div class="sort-buttons">
+                <a href="?sort=recent" class="sort-btn <?php echo $sort === 'recent' ? 'active' : ''; ?>" data-sort="recent">
+                    <i class="bi bi-clock-history me-1"></i> Most Recent
+                </a>
+                <a href="?sort=popular" class="sort-btn <?php echo $sort === 'popular' ? 'active' : ''; ?>" data-sort="popular">
+                    <i class="bi bi-bar-chart me-1"></i> Most Downloaded
+                </a>
+                <a href="?sort=alphabetical" class="sort-btn <?php echo $sort === 'alphabetical' ? 'active' : ''; ?>" data-sort="alphabetical">
+                    <i class="bi bi-sort-alpha-down me-1"></i> Alphabetical
                 </a>
             </div>
         </div>

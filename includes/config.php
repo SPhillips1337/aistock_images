@@ -28,14 +28,31 @@ function getDB() {
 }
 
 // Get all categories with image counts
-function getCategories() {
+function getCategories($sort = 'alphabetical') {
     $db = getDB();
+    $orderClause = 'c.name ASC';
+    
+    switch($sort) {
+        case 'recent':
+            $orderClause = 'MAX(i.created_at) DESC';
+            break;
+        case 'popular':
+            $orderClause = 'SUM(COALESCE(i.downloads, 0)) DESC';
+            break;
+        case 'alphabetical':
+        default:
+            $orderClause = 'c.name ASC';
+            break;
+    }
+    
     $stmt = $db->query("
-        SELECT c.*, COUNT(i.id) as actual_count 
+        SELECT c.*, COUNT(i.id) as actual_count,
+               MAX(i.created_at) as latest_image,
+               SUM(COALESCE(i.downloads, 0)) as total_downloads
         FROM categories c 
         LEFT JOIN images i ON c.id = i.category_id 
         GROUP BY c.id 
-        ORDER BY c.name ASC
+        ORDER BY $orderClause
     ");
     return $stmt->fetchAll();
 }
@@ -49,9 +66,24 @@ function getCategoryBySlug($slug) {
 }
 
 // Get images by category
-function getImagesByCategory($categoryId, $limit = null, $offset = 0) {
+function getImagesByCategory($categoryId, $limit = null, $offset = 0, $sort = 'recent') {
     $db = getDB();
-    $sql = "SELECT * FROM images WHERE category_id = ? ORDER BY created_at DESC";
+    $orderClause = 'i.created_at DESC';
+    
+    switch($sort) {
+        case 'alphabetical':
+            $orderClause = 'i.filename ASC';
+            break;
+        case 'popular':
+            $orderClause = 'i.downloads DESC, i.created_at DESC';
+            break;
+        case 'recent':
+        default:
+            $orderClause = 'i.created_at DESC';
+            break;
+    }
+    
+    $sql = "SELECT * FROM images i WHERE category_id = ? ORDER BY $orderClause";
     if ($limit) {
         $sql .= " LIMIT ? OFFSET ?";
         $stmt = $db->prepare($sql);
@@ -189,6 +221,30 @@ function formatFileSize($bytes) {
     } else {
         return $bytes . ' bytes';
     }
+}
+
+// Get alphabet navigation for categories
+function getAlphabetNavigation($categories) {
+    $alphabet = range('A', 'Z');
+    $nav = [];
+    
+    foreach ($alphabet as $letter) {
+        $nav[$letter] = [
+            'count' => 0,
+            'categories' => [],
+            'active' => false
+        ];
+    }
+    
+    foreach ($categories as $category) {
+        $firstLetter = strtoupper(substr($category['name'], 0, 1));
+        if (isset($nav[$firstLetter])) {
+            $nav[$firstLetter]['count']++;
+            $nav[$firstLetter]['categories'][] = $category['name'];
+        }
+    }
+    
+    return $nav;
 }
 
 // Escape output for security
