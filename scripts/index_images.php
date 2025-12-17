@@ -78,10 +78,20 @@ foreach ($files as $filepath) {
     }
     
     // Check if image already exists
-    $stmt = $db->prepare("SELECT id FROM images WHERE filename = ?");
+    $stmt = $db->prepare("SELECT id, created_at FROM images WHERE filename = ?");
     $stmt->execute([$filename]);
-    if ($stmt->fetch()) {
-        continue; // Skip existing images
+    $existing = $stmt->fetch();
+    if ($existing) {
+        // If file on disk is newer than DB created_at, update the DB timestamp so it appears in "Recently Added"
+        $file_mtime = filemtime($filepath);
+        $db_time = strtotime($existing['created_at']);
+        if ($file_mtime && $file_mtime > $db_time) {
+            $new_time = date('Y-m-d H:i:s', $file_mtime);
+            $upd = $db->prepare("UPDATE images SET created_at = ? WHERE id = ?");
+            $upd->execute([$new_time, $existing['id']]);
+            echo "Updated timestamp for existing image: $filename -> $new_time\n";
+        }
+        continue; // Skip further insertion
     }
     
     // Get image dimensions

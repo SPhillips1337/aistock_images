@@ -23,6 +23,11 @@ php scripts/cleanup_deleted.php >> "$LOG_FILE" 2>&1
 # 2. Generate new images
 log_message "Step 2: Generating new images..."
 /home/stephen/private/happymonkey.ai/stock_venv/bin/python3 auto_stock_creator.py >> "$LOG_FILE" 2>&1
+PY_EXIT=$?
+if [ $PY_EXIT -ne 0 ]; then
+    log_message "Step 2 failed with exit code $PY_EXIT"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') Step 2 failed with exit code $PY_EXIT" >> "$PROJECT_DIR/automation_failures.log"
+fi
 
 # 3. Index new images
 log_message "Step 3: Indexing new images..."

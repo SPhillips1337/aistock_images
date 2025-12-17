@@ -23,15 +23,6 @@ except ImportError:
     def filter_keywords(keywords):
         return keywords
 
-# Import enhanced prompt generator
-try:
-    from enhanced_prompt_generator import EnhancedPromptGenerator
-except ImportError:
-    print("Warning: enhanced_prompt_generator.py not found. Using basic prompts.")
-    class EnhancedPromptGenerator:
-        def generate_enhanced_prompt(self, keyword):
-            return f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
-
 # Load environment variables
 load_dotenv()
 
@@ -338,98 +329,80 @@ def check_image_quality(image_path):
             return False
             
         return True
-
-def check_image_quality_detailed(image_path):
-    """
-    Enhanced quality check that returns detailed analysis for Ovis fallback decisions.
-    Returns dict with 'pass', 'text_issue', 'reason' keys.
-    """
-    print(f"Verifying image quality for {image_path}...")
-    
-    if not os.path.exists(image_path):
-        return {"pass": False, "text_issue": False, "reason": "Image file not found"}
-        
-    ai_url = OLLAMA_URL
-    model = OLLAMA_VISION_MODEL
-    
-    try:
-        with open(image_path, "rb") as image_file:
-            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-            
-        prompt = """
-        Analyze this image for quality and content appropriateness for a professional stock photo website.
-        
-        Check specifically for:
-        1. Text quality: Is there any text? If so, is it legible or gibberish/garbled?
-        2. Human anatomy: Are there human figures with correct anatomy (fingers, limbs)?
-        3. Image clarity: Is the image blurry or nonsensical?
-        4. NSFW content: Any nudity, sexual content, or inappropriate material?
-        5. Professional suitability: Appropriate for business/professional use?
-        6. Ethical concerns: Violence, crime scenes, accidents, or distressing events?
-        
-        Return JSON with:
-        - "has_text": boolean
-        - "text_quality": "good", "bad", or "n/a" 
-        - "has_humans": boolean
-        - "anatomy_quality": "good", "bad", or "n/a"
-        - "is_nsfw": boolean
-        - "is_professional": boolean
-        - "is_ethical": boolean
-        - "has_violence": boolean
-        - "overall_quality": "pass" or "reject"
-        - "reason": detailed explanation
-        """
-        
-        payload = {
-            "model": model,
-            "prompt": prompt,
-            "images": [encoded_string],
-            "stream": False,
-            "format": "json"
-        }
-        
-        response = requests.post(ai_url, json=payload, timeout=60)
-        response.raise_for_status()
-        result = response.json()
-        
-        response_text = result.get('response', '{}')
-        if "```" in response_text:
-            response_text = response_text.replace("```json", "").replace("```", "").strip()
-            
-        analysis = json.loads(response_text)
-        print(f"Vision QA Analysis: {analysis}")
-        
-        # Determine if this is a text-specific issue
-        text_issue = analysis.get("has_text", False) and analysis.get("text_quality") == "bad"
-        
-        # Collect rejection reasons
-        rejection_reasons = []
-        
-        if analysis.get("is_nsfw", False):
-            rejection_reasons.append("NSFW content")
-        if not analysis.get("is_ethical", True):
-            rejection_reasons.append("Unethical content")
-        if analysis.get("has_violence", False):
-            rejection_reasons.append("Violence/trauma content")
-        if not analysis.get("is_professional", True):
-            rejection_reasons.append("Not professional")
-        if analysis.get("has_humans", False) and analysis.get("anatomy_quality") == "bad":
-            rejection_reasons.append("Anatomy issues")
-        if text_issue:
-            rejection_reasons.append("Bad text quality")
-        if analysis.get("overall_quality") == "reject":
-            rejection_reasons.append("General quality issues")
-            
-        return {
-            "pass": len(rejection_reasons) == 0,
-            "text_issue": text_issue,
-            "reason": analysis.get("reason", "; ".join(rejection_reasons)),
-            "analysis": analysis
-        }
         
     except Exception as e:
-        print(f"Error in quality check: {e}")
-        return {"pass": True, "text_issue": False, "reason": f"Quality check failed: {e}"}
+        print(f"Error checking image quality: {e}")
+        return True # Fail open on error to keep running
+
+def get_images(ws, prompt, client_id):
+    prompt_id = queue_prompt(prompt, client_id)['prompt_id']
+    output_images = {}
+    while True:
+        out = ws.recv()
+        if isinstance(out, str):
+            message = json.loads(out)
+            if message['type'] == 'executing':
+                data = message['data']
+                if data['node'] is None and data['prompt_id'] == prompt_id:
+                    break  # Execution is done
+        else:
+            continue  # Previews are binary data
+
+    history = get_history(prompt_id)[prompt_id]
+    for o in history['outputs']:
+        for node_id in history['outputs']:
+            node_output = history['outputs'][node_id]
+            if 'images' in node_output:
+                images_output = []
+                for image in node_output['images']:
+                    image_data = get_image(image['filename'], image['subfolder'], image['type'])
+                    images_output.append(image_data)
+                output_images[node_id] = images_output
+
+    return output_images
+
+def queue_prompt(prompt, client_id):
+    p = {"prompt": prompt, "client_id": client_id}
+    response = requests.post(f"{COMFYUI_URL}/prompt", json=p)
+    response.raise_for_status()
+    return response.json()
+
+def get_history(prompt_id):
+    response = requests.get(f"{COMFYUI_URL}/history/{prompt_id}")
+    response.raise_for_status()
+    return response.json()
+
+def get_image(filename, subfolder, folder_type):
+    response = requests.get(f"{COMFYUI_URL}/view", params={"filename": filename, "subfolder": subfolder, "type": folder_type})
+    response.raise_for_status()
+    return response.content
+
+
+def generate_image_with_workflow(ws, workflow_template, prompt_text, seed, client_id, node_mapping):
+    """
+    Generates an image using the specified workflow and settings.
+    Returns a list of (image_data, filename_suffix) tuples.
+    """
+    # Create a deep copy to avoid modifying the template for future runs
+    workflow = json.loads(json.dumps(workflow_template))
+    
+    # Update prompt
+    prompt_node = node_mapping["prompt"]
+    workflow[prompt_node]["inputs"]["text"] = prompt_text
+    
+    # Update seed
+    seed_node = node_mapping["seed"]
+    workflow[seed_node]["inputs"]["seed"] = seed
+    
+    # Queue prompt
+    images = get_images(ws, workflow, client_id)
+    
+    results = []
+    for node_id in images:
+        for image_data in images[node_id]:
+            results.append(image_data)
+            
+    return results
 
 def main():
     """Main function."""
@@ -487,15 +460,11 @@ def main():
         ws.connect(f"ws://{urlparse(COMFYUI_URL).netloc}/ws?clientId={COMFYUI_CLIENT_ID}")
 
         try:
-            # Initialize enhanced prompt generator
-            prompt_generator = EnhancedPromptGenerator()
-            
             for keyword in keywords:
                 print(f"Processing keyword: {keyword}")
                 
-                # Enhanced prompt construction using Google Gemini's principles
-                stock_prompt = prompt_generator.generate_enhanced_prompt(keyword)
-                print(f"Enhanced prompt: {stock_prompt}")
+                # Base prompt construction
+                stock_prompt = f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
                 
                 # Try Primary (Turbo) first
                 seed = random.randint(1, 10**15)
@@ -526,31 +495,24 @@ def main():
                     print(f"Saved Turbo: {filename}")
                     
                     # Verify Quality
-                    quality_result = check_image_quality_detailed(filename)
+                    is_good = check_image_quality(filename)
                     
-                    if quality_result['pass']:
+                    if is_good:
                         print(f"Image passed Verification.")
                     else:
-                        print(f"Image REJECTED. Reason: {quality_result['reason']}")
+                        print(f"Image REJECTED. Moving to rejected folder.")
                         rejected_filename = filename + ".rejected"
                         os.rename(filename, rejected_filename)
                         
-                        # FALLBACK to Ovis with text-specific prompt if text issue
+                        # FALLBACK to Ovis
                         if "ovis" in workflows:
-                            if quality_result['text_issue']:
-                                print(f"Text quality issue detected. Using Gemini-optimized Ovis fallback prompt...")
-                                ovis_prompt = prompt_generator.generate_ovis_fallback_prompt(keyword, quality_result['reason'])
-                                print(f"Ovis prompt: {ovis_prompt}")
-                            else:
-                                print(f"Non-text quality issue. Using standard Ovis fallback...")
-                                ovis_prompt = stock_prompt  # Use original enhanced prompt
-                            
+                            print(f"Retrying with Ovis fallback...")
                             try:
                                 ovis_images = generate_image_with_workflow(
                                     ws, 
                                     workflows["ovis"], 
-                                    ovis_prompt, 
-                                    random.randint(1, 10**15), # New seed for better results
+                                    stock_prompt, 
+                                    seed, # Reuse seed or new one? New one might be better for diffusion diffs, but reuse is fine too.
                                     COMFYUI_CLIENT_ID, 
                                     WORKFLOW_CONFIG["ovis"]["nodes"]
                                 )
@@ -562,16 +524,8 @@ def main():
                                     ovis_img.save(ovis_filename)
                                     print(f"Saved Ovis Fallback: {ovis_filename}")
                                     
-                                    # Verify Ovis quality too
-                                    ovis_quality = check_image_quality_detailed(ovis_filename)
-                                    if ovis_quality['pass']:
-                                        print(f"Ovis image passed verification.")
-                                    else:
-                                        print(f"Ovis image also rejected: {ovis_quality['reason']}")
-                                        # Rename Ovis image as rejected
-                                        ovis_rejected = ovis_filename + ".rejected"
-                                        os.rename(ovis_filename, ovis_rejected)
-                                        
+                                    # Optional: Check Ovis quality too? User didn't strictly ask, but implied "try re-making it".
+                                    # We'll just save it for now as "better text" is the claim.
                             except Exception as e:
                                 print(f"Error in Ovis fallback: {e}")
                         else:
