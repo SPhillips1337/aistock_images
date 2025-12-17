@@ -236,25 +236,155 @@ h1, h2, h3, h4, h5, h6 {
 
 .image-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+    inset: 0;
     opacity: 0;
     transition: var(--transition);
     display: flex;
-    align-items: flex-end;
-    padding: 1.5rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Use a pseudo-element so the gradient always covers the full card area (prevents a central "bar") */
+.image-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.65) 100%);
+    opacity: 0;
+    transition: var(--transition);
+    pointer-events: none;
+}
+
+.image-card:hover .image-overlay::before {
+    opacity: 1;
 }
 
 .image-card:hover .image-overlay {
     opacity: 1;
 }
 
+/* Ensure overlay content sits above the gradient layer */
+.image-overlay-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.image-overlay-content small {
+    font-size: 0.95rem;
+}
+
+/* Larger images keep slightly bigger overlay padding and bottom-left alignment */
+@media (min-width: 992px) {
+    .image-overlay {
+        align-items: flex-end;
+        justify-content: flex-start;
+    }
+    .image-overlay::before {
+        /* stronger gradient on large images */
+        background: linear-gradient(to bottom, rgba(0,0,0,0.32) 0%, rgba(0,0,0,0.72) 100%);
+    }
+    .related-section .image-overlay {
+        padding-left: 1.5rem;
+    }
+}
+
+/* Specific styles for related thumbnails to make overlay larger and more visible */
+.related-section .related-image-card { display: block; min-height: 140px; }
+.related-section .related-image-card img { height: 140px; object-fit: cover; display: block; width: 100%; }
+
+.related-section .image-overlay::before { background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.85) 100%); }
+
+.related-section .image-overlay-content .overlay-center { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:8px 10px; }
+.related-section .image-overlay-content .overlay-center i { font-size:24px; }
+.related-section .image-overlay-content .overlay-text { font-size:14px; font-weight:700; }
+
+@media (max-width:576px) {
+  .related-section .related-image-card img { height: 110px; }
+  .related-section .image-overlay-content .overlay-center i { font-size:20px; }
+  .related-section .image-overlay-content .overlay-text { font-size:13px; }
+}
+
+.image-card:hover .image-overlay {
+    opacity: 1;
+}
+
+/* Larger images keep slightly bigger overlay padding */
+@media (min-width: 992px) {
+    .image-overlay {
+        padding: 1rem;
+        align-items: flex-end;
+        justify-content: flex-start;
+        padding-left: 1.5rem;
+    }
+    /* For related thumbnails on large screens, increase overlay hit area */
+    .related-section .image-overlay {
+        padding: 1rem 1.25rem;
+    }
+}
+
+/* Specific styles for related thumbnails to make overlay larger and more visible */
+.related-section .related-image-card {
+    height: auto; /* allow different aspect */
+}
+
+.related-section .related-image-card img {
+    height: 120px;
+    object-fit: cover;
+}
+
+.related-section .image-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.related-section .image-overlay-content .overlay-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.related-section .image-overlay-content .overlay-center i {
+    font-size: 20px;
+}
+
+.related-section .image-overlay-content .overlay-text {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Make overlay more prominent on small thumbnails */
+@media (max-width: 576px) {
+    .related-section .image-overlay {
+        padding: 8px;
+    }
+    .related-section .image-overlay-content .overlay-center i {
+        font-size: 18px;
+    }
+    .related-section .image-overlay-content .overlay-text {
+        font-size: 12px;
+    }
+}
+
 .image-overlay-content {
     color: white;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.image-overlay-content small {
+    font-size: 0.95rem;
 }
 
 .download-btn {

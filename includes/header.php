@@ -18,9 +18,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=1.2.5">
     <link rel="stylesheet" href="/assets/css/lazy-load.css">
     <link rel="stylesheet" href="/assets/css/cookie-consent.css">
+    <link rel="stylesheet" href="/assets/css/overlay-overrides.css">
     <?php 
     // Include filter controls CSS and JS for pages that need it
     if (basename($_SERVER['PHP_SELF']) === 'index.php' || basename($_SERVER['PHP_SELF']) === 'category.php'):

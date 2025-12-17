@@ -1,0 +1,16 @@
+.related-section .related-image-card img { height: 160px !important; min-height: 110px !important; }
+.related-section .related-image-card { min-height: 160px !important; }
+.related-section .image-overlay::before { background: linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.9) 100%) !important; }
+.related-section .image-overlay-content .overlay-center i { font-size: 26px !important; }
+.related-section .image-overlay-content .overlay-text { font-size: 15px !important; font-weight: 700 !important; }
+.related-section .image-overlay { pointer-events: auto !important; }
+
+/* Ensure overlay covers entire thumbnail */
+.related-section .image-overlay, .related-section .image-overlay::before { inset: 0; width: 100%; height: 100%; }
+
+@media (max-width: 576px) {
+  .related-section .related-image-card img { height: 120px !important; }
+  .related-section .related-image-card { min-height: 120px !important; }
+  .related-section .image-overlay-content .overlay-center i { font-size: 20px !important; }
+  .related-section .image-overlay-content .overlay-text { font-size: 13px !important; }
+}
