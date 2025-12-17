@@ -3,13 +3,15 @@
   "name": "AI Stock Photo Website",
   "slug": "ai-stock-photo-website",
   "summary": "Professional stock photo website featuring AI-generated images with automated content generation, NSFW filtering, and comprehensive management",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "license": "MIT",
   "status": "production",
   "concept": "Automated stock photography platform that generates trending images using AI, scrapes news for topics, validates content quality/safety, and provides a modern web interface with lazy loading",
   
-  "primary_features": [
+    "primary_features": [
     "AI-powered image generation using ComfyUI",
+    "Enhanced prompt generator optimized for Turbo (camera qualities, lighting, materials)",
+    "Ovis fallback prompts for robust text/layout integration",
     "Automated trending topic extraction from news feeds",
     "Enhanced ethical content filtering (keyword + AI vision)",
     "Category-based image organization with advanced filtering",
@@ -18,6 +20,7 @@
     "Responsive web interface with lazy loading",
     "Advanced sorting: alphabetical, most recent, most downloaded",
     "Interactive alphabet navigation with quick category jumping",
+    "Hourly image generation via cron",
     "Download tracking and analytics",
     "Broken link prevention and cleanup"
   ],
@@ -269,5 +272,5 @@
   "progress_percent": 100,
   "progress_state": "Production ready with enhanced ethical filtering, dynamic sitemaps, and comprehensive security hardening",
   
-  "lastUpdated": "2025-12-17T16:45:00Z"
+  "lastUpdated": "2025-12-17T19:12:00Z"
 }

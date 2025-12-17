@@ -15,7 +15,10 @@ A professional stock photo website featuring AI-generated images with enhanced e
 - ⚡ **Fast Performance**: Lazy loading and optimized assets
 
 ### AI-Powered Features
-- 🤖 **Automated Generation**: Daily image generation with trending topics
+
+- 🤖 **Automated Generation**: Hourly image generation with trending topics (cron-managed)
+- 🧠 **Enhanced Prompt System**: Google Gemini-inspired prompt optimizer (camera qualities, lighting, materials) for higher-quality outputs
+- 🔁 **Ovis Fallback Prompts**: Structural text-aware fallback for improved text/layout rendering when Turbo outputs bad text
 - 🔄 **Auto-sync**: Frontend automatically updates with new/deleted images
 - 📰 **Trending Topics**: Extracts themes from news, holidays, and static trends
 
@@ -26,9 +29,12 @@ A professional stock photo website featuring AI-generated images with enhanced e
 - **🛑 Trauma Prevention**: Blocks violence, emergency, and bad taste content
 
 ### SEO & Performance
+
 - 🗺️ **Dynamic Sitemaps**: Auto-generated XML sitemaps for Google Search Console
+- 🧩 **Structured Data (JSON-LD)**: Page-level schema and ImageObject metadata to encourage AI indexing and rich snippets
 - 🧹 **Smart Cleanup**: Automatic database maintenance and broken link prevention
 - 📊 **Performance Optimized**: Fast loading with modern web technologies
+- 🔎 **SEO Hook**: Header-level JSON-LD injection for homepage, category, image pages (implemented with `includes/seo.php`)
 
 ## 🛠️ Technology Stack
 
@@ -196,6 +202,15 @@ python3 test_filtering.py  # Test keyword filtering
 - **Proper Permissions**: Secure file access controls
 
 ## 📝 Changelog
+
+### v1.4.0 (2025-12-17)
+- ✨ **Enhanced Prompt Generator**: Gemini-inspired prompt optimization (camera qualities, lighting, materials) for Z-Image Turbo
+- ✨ **Ovis Fallback Prompts**: Structural text instructions for improved text layout when Turbo rejects text
+- ✨ **Hourly Generation**: Cron updated to run image generation hourly to build content faster
+- ✨ **SEO Enhancements**: Added JSON-LD structured data, dynamic sitemap improvements, and header SEO hook (`includes/seo.php`)
+- 🔧 **Frontend Improvements**: Alphabetical navigation restored on homepage and category pages, advanced sorting, and improved hover overlays for related thumbnails
+- 🔧 **Security & Paths**: Virtualenv and .env moved outside web root; scripts updated to use secure paths
+- 🐛 **CSS Fixes**: Overlay and hero gradient fixes for consistent styling across site
 
 ### v1.3.0 (2025-12-16)
 - ✨ **Enhanced Ethical Filtering**: Two-layer content protection system

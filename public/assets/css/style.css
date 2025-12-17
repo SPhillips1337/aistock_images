@@ -100,6 +100,27 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 1;
 }
 
+/* BG Gradient utility for subpages (About, Contact, etc.) */
+.bg-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid2" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid2)"/></svg>');
+    opacity: 0.25;
+}
+
+.bg-gradient .container {
+    position: relative;
+    z-index: 1;
+}
+
 .hero h1 {
     font-size: 3.5rem;
     font-weight: 800;
@@ -556,9 +577,27 @@ footer {
 }
 
 /* Utility Classes */
-.bg-gradient {
+.bg-gradient-simple {
+    /* Simple gradient utility (kept to avoid clashing with hero-style bg-gradient) */
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
 }
+
+/* Forceful hero-like gradient for section headers to ensure subpages match homepage */
+section.bg-gradient {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color)) !important;
+    color: white !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+section.bg-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid3" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid3)"/></svg>') !important;
+    opacity: 0.25 !important;
+    pointer-events: none !important;
+}
+section.bg-gradient .container { position: relative !important; z-index: 1 !important; }
 
 .text-gradient {
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
