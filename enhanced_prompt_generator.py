@@ -135,9 +135,10 @@ class EnhancedPromptGenerator:
         else:
             return random.choice(['modern', 'natural', 'luxury'])
 
-    def generate_enhanced_prompt(self, keyword):
-        """Generate an enhanced professional stock photo prompt."""
-        
+    def generate_enhanced_prompt(self, keyword, include_negatives=False):
+        """Generate an enhanced professional stock photo prompt.
+        If include_negatives=True, append a set of negative constraints to avoid common AI artifacts.
+        """
         # Determine the style components
         category_type = self.get_category_type(keyword)
         lighting_style = self.get_lighting_style(keyword)
@@ -175,6 +176,13 @@ class EnhancedPromptGenerator:
         # Remove any empty parts and join
         prompt_parts = [part for part in prompt_parts if part and part.strip()]
         enhanced_prompt = ", ".join(prompt_parts)
+
+        if include_negatives:
+            negatives = (
+                "no extra limbs, no mutated or deformed hands, no extra fingers, realistic anatomy, "
+                "no blur, no artifacts, no watermark, no logos, no gibberish text, avoid unrelated scenes"
+            )
+            enhanced_prompt = f"{enhanced_prompt}, avoid: {negatives}"
         
         return enhanced_prompt
 

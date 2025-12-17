@@ -29,8 +29,15 @@ try:
 except ImportError:
     # Fallback trivial implementation
     class EnhancedPromptGenerator:
-        def generate_enhanced_prompt(self, keyword):
-            return f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
+        def generate_enhanced_prompt(self, keyword, include_negatives=False):
+            base = f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
+            if include_negatives:
+                negatives = (
+                    "no extra limbs, no mutated or deformed hands, no extra fingers, realistic anatomy, "
+                    "no blur, no artifacts, no watermark, no logos, no gibberish text, avoid unrelated scenes"
+                )
+                return f"{base}, avoid: {negatives}"
+            return base
         def get_ovis_fallback_prompt(self, keyword, text_issue_reason=""):
             clean_text = keyword.replace(' and ', ' & ').replace(' ', ' ').upper()
             return f"A professional stock photo of {keyword}. The text '{clean_text}' is written in a clean, bold, white sans-serif font centered at the top. High-end lighting, minimalist background."
@@ -479,7 +486,8 @@ def main():
                 print(f"Processing keyword: {keyword}")
                 
                 # Base prompt construction
-                stock_prompt = prompt_generator.generate_enhanced_prompt(keyword)
+                # Generate prompt with default negatives to reduce hallucinations
+                stock_prompt = prompt_generator.generate_enhanced_prompt(keyword, include_negatives=True)
 
                 # Try Primary (Turbo) first
                 seed = random.randint(1, 10**15)
