@@ -41,16 +41,23 @@ foreach ($files as $filepath) {
     // Format: Category_Name.png or Category_Name_1.png or Category_Name_ovis.png
     $name = pathinfo($filename, PATHINFO_FILENAME);
     
-    // Remove trailing numbers and _ovis suffix
-    $categoryName = preg_replace('/_\d+$/', '', $name);
-    $categoryName = preg_replace('/_ovis$/', '', $categoryName);
+    // Remove suffixes first, then trailing numbers
+    $categoryName = preg_replace('/_ovis$/', '', $name);
+    $categoryName = preg_replace('/_flux$/', '', $categoryName);
+    $categoryName = preg_replace('/_\d+$/', '', $categoryName);
     
     // Replace underscores with spaces for display
     $categoryDisplay = str_replace('_', ' ', $categoryName);
     $categorySlug = createSlug($categoryDisplay);
     
     // Determine model used
-    $model = (strpos($filename, '_ovis') !== false) ? 'ovis' : 'turbo';
+    if (strpos($filename, '_ovis') !== false) {
+        $model = 'ovis';
+    } elseif (strpos($filename, '_flux') !== false) {
+        $model = 'Flux2';
+    } else {
+        $model = 'turbo';
+    }
     
     // Create or get category
     if (!isset($categories[$categorySlug])) {

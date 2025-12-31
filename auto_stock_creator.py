@@ -63,7 +63,7 @@ for var in required_vars:
 COMFYUI_CLIENT_ID = str(uuid.uuid4())
 
 # File paths
-COMFYUI_WORKFLOW_TURBO = "image_z_image_turbo.json"
+COMFYUI_WORKFLOW_TURBO = "image_flux2.json"
 COMFYUI_WORKFLOW_OVIS = "image_ovis_text_to_image.json"
 IMAGE_DIR = "images"
 
@@ -72,8 +72,8 @@ WORKFLOW_CONFIG = {
     "turbo": {
         "file": COMFYUI_WORKFLOW_TURBO,
         "nodes": {
-            "prompt": "45",
-            "seed": "44"
+            "prompt": "6",
+            "seed": "25"
         }
     },
     "ovis": {
@@ -397,6 +397,47 @@ def get_image(filename, subfolder, folder_type):
     return response.content
 
 
+def rewrite_prompt(original_prompt, rejection_reason=""):
+    """
+    Uses the LLM to rewrite the prompt to address rejection reasons or improve quality.
+    """
+    print(f"Rewriting prompt based on rejection: {rejection_reason}")
+    ai_url = OLLAMA_URL
+    model = OLLAMA_TEXT_MODEL
+    
+    prompt = f"""
+    I have a prompt for a stock photo that was rejected.
+    Original Prompt: "{original_prompt}"
+    Rejection Reason: "{rejection_reason}"
+    
+    Please rewrite this prompt to:
+    1. Address the rejection reason specifically (e.g., if text was bad, remove text requests; if anatomy was bad, simplify complexities).
+    2. Improve the overall quality description.
+    3. Ensure it remains safe and professional (SFW).
+    4. Keep it concise but descriptive for an image generator (Flux).
+    
+    Return ONLY the new prompt text. No explanations.
+    """
+    
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False
+    }
+    
+    try:
+        response = requests.post(ai_url, json=payload, timeout=30)
+        response.raise_for_status()
+        result = response.json()
+        new_prompt = result.get('response', '').strip()
+        print(f"Rewritten Prompt: {new_prompt}")
+        return new_prompt
+    except Exception as e:
+        print(f"Error rewriting prompt: {e}")
+        return original_prompt # Fallback to original
+
+
+
 def generate_image_with_workflow(ws, workflow_template, prompt_text, seed, client_id, node_mapping):
     """
     Generates an image using the specified workflow and settings.
@@ -511,7 +552,8 @@ def main():
                     image = Image.open(io.BytesIO(image_data))
                     title = keyword.replace(' ', '_').replace('/', '-')
                     # Use a hash or timestamp to ensure uniqueness if keywords repeat, relying on get_unique_filename
-                    base_filename = f"{IMAGE_DIR}/{title}.png"
+                    # Updated to include _flux suffix for Flux2 generated images
+                    base_filename = f"{IMAGE_DIR}/{title}_flux.png"
                     filename = get_unique_filename(base_filename)
                     
                     image.save(filename)
@@ -527,32 +569,43 @@ def main():
                         rejected_filename = filename + ".rejected"
                         os.rename(filename, rejected_filename)
                         
-                        # FALLBACK to Ovis
-                        if "ovis" in workflows:
-                            print(f"Retrying with Ovis fallback...")
-                            try:
-                                ovis_images = generate_image_with_workflow(
-                                    ws, 
-                                    workflows["ovis"], 
-                                    stock_prompt, 
-                                    seed, # Reuse seed or new one? New one might be better for diffusion diffs, but reuse is fine too.
-                                    COMFYUI_CLIENT_ID, 
-                                    WORKFLOW_CONFIG["ovis"]["nodes"]
-                                )
+                        # RETRY with Flux using rewritten prompt
+                        print(f"Retrying with Flux (Rewritten Prompt)...")
+                        
+                        # Extract rejection reason if possible (would need check_image_quality to return it, 
+                        # for now assuming we can get it or just use generic "Quality issues")
+                        # Note: check_image_quality currently prints reasons but returns boolean.
+                        # Ideally refactor check_image_quality to return (bool, reason), but for now we'll just ask for improvement.
+                        rejection_reason = "Quality issues found in initial generation."
+                        
+                        new_stock_prompt = rewrite_prompt(stock_prompt, rejection_reason)
+                        
+                        try:
+                            retry_images = generate_image_with_workflow(
+                                ws, 
+                                workflows["turbo"], 
+                                new_stock_prompt, 
+                                random.randint(1, 10**15),
+                                COMFYUI_CLIENT_ID, 
+                                WORKFLOW_CONFIG["turbo"]["nodes"]
+                            )
+                            
+                            for j, retry_data in enumerate(retry_images):
+                                retry_img = Image.open(io.BytesIO(retry_data))
+                                retry_base = f"{IMAGE_DIR}/{title}_flux_retry.png" # Distinct suffix
+                                retry_filename = get_unique_filename(retry_base)
+                                retry_img.save(retry_filename)
+                                print(f"Saved Flux Retry: {retry_filename}")
                                 
-                                for j, ovis_data in enumerate(ovis_images):
-                                    ovis_img = Image.open(io.BytesIO(ovis_data))
-                                    ovis_base = f"{IMAGE_DIR}/{title}_ovis.png"
-                                    ovis_filename = get_unique_filename(ovis_base)
-                                    ovis_img.save(ovis_filename)
-                                    print(f"Saved Ovis Fallback: {ovis_filename}")
-                                    
-                                    # Optional: Check Ovis quality too? User didn't strictly ask, but implied "try re-making it".
-                                    # We'll just save it for now as "better text" is the claim.
-                            except Exception as e:
-                                print(f"Error in Ovis fallback: {e}")
-                        else:
-                            print("Ovis workflow not loaded, skipping fallback.")
+                                # Verify Retry Quality
+                                if check_image_quality(retry_filename):
+                                     print(f"Retry Image passed Verification.")
+                                else:
+                                     print(f"Retry Image REJECTED. Moving to rejected folder.")
+                                     os.rename(retry_filename, retry_filename + ".rejected")
+
+                        except Exception as e:
+                            print(f"Error in Flux retry: {e}")
 
                 print(f"Cycle complete for '{keyword}'.")
 
