@@ -23,24 +23,20 @@ except ImportError:
     def filter_keywords(keywords):
         return keywords
 
-# Import enhanced prompt generator (optional)
+# Import Flux2-optimized prompt generator
 try:
-    from enhanced_prompt_generator import EnhancedPromptGenerator
+    from flux2_prompt_generator import Flux2PromptGenerator
 except ImportError:
     # Fallback trivial implementation
-    class EnhancedPromptGenerator:
+    class Flux2PromptGenerator:
         def generate_enhanced_prompt(self, keyword, include_negatives=False):
-            base = f"stock photography of {keyword}, high quality, 4k, photorealistic, trending on artstation"
+            base = f"A professional stock photograph of {keyword}. High-quality editorial photography with beautiful lighting and premium commercial aesthetic."
             if include_negatives:
                 negatives = (
-                    "no extra limbs, no mutated or deformed hands, no extra fingers, realistic anatomy, "
-                    "no blur, no artifacts, no watermark, no logos, no gibberish text, avoid unrelated scenes"
+                    " Avoid: extra limbs, deformed hands, blur, artifacts, watermarks, logos, gibberish text."
                 )
-                return f"{base}, avoid: {negatives}"
+                return f"{base}{negatives}"
             return base
-        def get_ovis_fallback_prompt(self, keyword, text_issue_reason=""):
-            clean_text = keyword.replace(' and ', ' & ').replace(' ', ' ').upper()
-            return f"A professional stock photo of {keyword}. The text '{clean_text}' is written in a clean, bold, white sans-serif font centered at the top. High-end lighting, minimalist background."
 
 # Load environment variables
 load_dotenv()
@@ -520,8 +516,8 @@ def main():
         ws.connect(f"ws://{urlparse(COMFYUI_URL).netloc}/ws?clientId={COMFYUI_CLIENT_ID}")
 
         try:
-            # Initialize enhanced prompt generator
-            prompt_generator = EnhancedPromptGenerator()
+            # Initialize Flux2 prompt generator
+            prompt_generator = Flux2PromptGenerator()
 
             for keyword in keywords:
                 print(f"Processing keyword: {keyword}")
