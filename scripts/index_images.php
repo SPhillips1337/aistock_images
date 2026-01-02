@@ -41,8 +41,9 @@ foreach ($files as $filepath) {
     // Format: Category_Name.png or Category_Name_1.png or Category_Name_ovis.png
     $name = pathinfo($filename, PATHINFO_FILENAME);
     
-    // Remove suffixes first, then trailing numbers
-    $categoryName = preg_replace('/_ovis$/', '', $name);
+    // Remove trailing numbers first, then model suffixes, then numbers again (to handle Name_1_flux -> Name_1 -> Name)
+    $categoryName = preg_replace('/_\d+$/', '', $name);
+    $categoryName = preg_replace('/_ovis$/', '', $categoryName);
     $categoryName = preg_replace('/_flux$/', '', $categoryName);
     $categoryName = preg_replace('/_\d+$/', '', $categoryName);
     

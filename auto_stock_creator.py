@@ -13,6 +13,7 @@ import os
 from bs4 import BeautifulSoup
 from datetime import datetime
 import random
+import subprocess
 from dotenv import load_dotenv
 
 # Import our keyword filters
@@ -127,6 +128,29 @@ def get_unique_filename(filepath):
         if not os.path.exists(new_path):
             return new_path
         counter += 1
+
+def save_metadata(image_path, prompt, seed, model, other_data=None):
+    """Saves metadata to a JSON file with the same basename as the image."""
+    try:
+        base, _ = os.path.splitext(image_path)
+        json_path = f"{base}.json"
+        
+        metadata = {
+            "prompt": prompt,
+            "seed": seed,
+            "model": model,
+            "timestamp": datetime.now().isoformat(),
+        }
+        
+        if other_data:
+            metadata.update(other_data)
+            
+        with open(json_path, 'w') as f:
+            json.dump(metadata, f, indent=2)
+            
+        print(f"Saved metadata: {json_path}")
+    except Exception as e:
+        print(f"Failed to save metadata: {e}")
 
 def get_todays_holidays():
     """Gets today's 'Fun Holidays' from timeanddate.com."""
@@ -555,6 +579,9 @@ def main():
                     image.save(filename)
                     print(f"Saved Turbo: {filename}")
                     
+                    # Save metadata
+                    save_metadata(filename, stock_prompt, seed, "Flux2/Turbo", {"keyword": keyword})
+                    
                     # Verify Quality
                     is_good = check_image_quality(filename)
                     
@@ -593,6 +620,9 @@ def main():
                                 retry_img.save(retry_filename)
                                 print(f"Saved Flux Retry: {retry_filename}")
                                 
+                                # Save metadata for retry
+                                save_metadata(retry_filename, new_stock_prompt, seed, "Flux2/Retry", {"keyword": keyword, "original_prompt": stock_prompt, "rejection_reason": rejection_reason})
+                                
                                 # Verify Retry Quality
                                 if check_image_quality(retry_filename):
                                      print(f"Retry Image passed Verification.")
@@ -607,6 +637,15 @@ def main():
 
         finally:
             ws.close()
+            
+        # Run the PHP indexer to update the database
+        print("Running image indexer...")
+        try:
+            indexer_path = os.path.join(os.path.dirname(__file__), "scripts", "index_images.php")
+            subprocess.run(["php", indexer_path], check=True)
+            print("Image indexer finished successfully.")
+        except Exception as e:
+            print(f"Failed to run image indexer: {e}")
 
     except requests.exceptions.RequestException as e:
         print(f"Network error (ComfyUI might be down): {e}")
