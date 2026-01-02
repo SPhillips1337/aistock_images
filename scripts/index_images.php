@@ -112,7 +112,19 @@ foreach ($files as $filepath) {
         INSERT INTO images (filename, filepath, category_id, model, width, height, prompt) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
+
+    // Try to load real metadata from sidecar JSON
+    $jsonPath = preg_replace('/\.(png|jpg|jpeg)$/i', '.json', $filepath);
     $prompt = "stock photography of $categoryDisplay, high quality, 4k, photorealistic";
+    
+    if (file_exists($jsonPath)) {
+        $metadata = json_decode(file_get_contents($jsonPath), true);
+        if ($metadata && isset($metadata['prompt'])) {
+            $prompt = $metadata['prompt'];
+            echo "Loaded custom prompt for $filename\n";
+        }
+    }
+
     $stmt->execute([$filename, $filepath, $categoryId, $model, $width, $height, $prompt]);
     $imageId = $db->lastInsertId();
     

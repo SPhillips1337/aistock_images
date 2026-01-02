@@ -43,7 +43,7 @@ include __DIR__ . '/../includes/header.php';
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="fw-bold">High Quality</h5>
                                     <p class="text-muted mb-0">
-                                        All images are generated at 1024×1024 resolution or higher
+                                        All images are generated at 1024×1024 resolution or higher using Flux 2
                                     </p>
                                 </div>
                             </div>
@@ -83,9 +83,9 @@ include __DIR__ . '/../includes/header.php';
                                     <i class="bi bi-check-circle-fill text-success fs-3"></i>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h5 class="fw-bold">Daily Updates</h5>
+                                    <h5 class="fw-bold">News-Driven Updates</h5>
                                     <p class="text-muted mb-0">
-                                        New images are added automatically every day
+                                        New images are generated automatically based on real-time global news trends
                                     </p>
                                 </div>
                             </div>
@@ -94,9 +94,10 @@ include __DIR__ . '/../includes/header.php';
                     
                     <h3 class="h4 fw-bold mt-5 mb-3">The Technology</h3>
                     <p class="mb-4">
-                        We use multiple AI models including Z-Image Turbo and Ovis text-to-image generators. 
-                        Each image goes through quality checks to ensure it meets our standards before 
-                        being added to the collection.
+                        We use an autonomous system that monitors global news headlines to inspire our creations. 
+                        Our state-of-the-art AI stack includes the advanced Flux 2 model, Z-Image Turbo, and Ovis 
+                        text-to-image generators. Each image goes through quality checks to ensure it meets our 
+                        standards before being added to the collection.
                     </p>
                     
                     <h3 class="h4 fw-bold mt-5 mb-3">Usage Rights</h3>
