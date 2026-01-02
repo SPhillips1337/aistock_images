@@ -203,6 +203,12 @@ python3 test_filtering.py  # Test keyword filtering
 
 ## 📝 Changelog
 
+### v1.5.0 (2026-01-02)
+- ✨ **News-Driven Generation**: Switched to Flux 2 model for higher quality images based on real-time global news trends
+- ✨ **Enhanced Detail Page**: Added full-screen lightbox for better image viewing
+- ✨ **Social Sharing**: Integrated Facebook, Twitter, and native sharing options on image detail pages
+- 📝 **Documentation**: Updated About page to reflect new technology stack
+
 ### v1.4.0 (2025-12-17)
 - ✨ **Enhanced Prompt Generator**: Gemini-inspired prompt optimization (camera qualities, lighting, materials) for Z-Image Turbo
 - ✨ **Ovis Fallback Prompts**: Structural text instructions for improved text layout when Turbo rejects text

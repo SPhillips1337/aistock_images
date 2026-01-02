@@ -3,7 +3,7 @@
   "name": "AI Stock Photo Website",
   "slug": "ai-stock-photo-website",
   "summary": "Professional stock photo website featuring AI-generated images with automated content generation, NSFW filtering, and comprehensive management",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "license": "MIT",
   "status": "production",
   "concept": "Automated stock photography platform that generates trending images using AI, scrapes news for topics, validates content quality/safety, and provides a modern web interface with lazy loading",
@@ -44,7 +44,7 @@
     "backend": "PHP 7.4+",
     "database": "SQLite with file existence validation",
     "frontend": "Bootstrap 5, Vanilla JS with Intersection Observer",
-    "ai_generation": "ComfyUI + Ollama (text + vision models)",
+    "ai_generation": "ComfyUI + Flux 2 + Ollama (text + vision models)",
     "content_filtering": "Two-layer ethical filtering: keyword blocking + AI vision analysis",
     "automation": "Bash scripts + Cron with comprehensive logging",
     "fonts": "Google Fonts (Inter, Poppins)",
@@ -227,7 +227,10 @@
       "Automated cleanup and thumbnail management",
       "Cron scheduling with comprehensive logging",
       "Broken link prevention",
-      "Performance optimization"
+      "Performance optimization",
+      "Flux 2 Image Generation",
+      "Image Lightbox",
+      "Social Sharing"
     ],
     "demo_ready": [
       "Browse categories with lazy loading and sorting",
@@ -272,5 +275,5 @@
   "progress_percent": 100,
   "progress_state": "Production ready with enhanced ethical filtering, dynamic sitemaps, and comprehensive security hardening",
   
-  "lastUpdated": "2025-12-17T20:40:00Z"
+  "lastUpdated": "2026-01-02T15:20:00Z"
 }
